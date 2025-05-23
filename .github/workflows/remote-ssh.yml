@@ -8,11 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug runner info
+        run: |
+          echo "HOME=$HOME"
+          whoami
+          ls -la $HOME
+
       - name: Set up SSH known_hosts
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H 100.89.152.57 >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
+          mkdir -p $HOME/.ssh
+          ssh-keyscan -H 100.89.152.57 >> $HOME/.ssh/known_hosts
+          chmod 644 $HOME/.ssh/known_hosts
 
       - name: Execute remote commands via SSH
         uses: appleboy/ssh-action@v0.1.7
