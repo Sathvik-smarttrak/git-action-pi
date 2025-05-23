@@ -1,0 +1,30 @@
+name: Remote SSH Command with Known Hosts
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  ssh_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Execute remote commands via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: pi
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Hello from GitHub Actions!"
+            hostname
+            uptime
+            ls -la /home/pi
